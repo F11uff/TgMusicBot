@@ -5,10 +5,9 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"musicBot/config"
+	_const "musicBot/internal/const"
 	"musicBot/internal/model"
 )
-
-const STATE = "Wait"
 
 func HandleCallback(conf *config.Config, user *model.User, query *tgbotapi.CallbackQuery) {
 	if _, err := conf.Bot.Request(tgbotapi.NewCallback(query.ID, "☻")); err != nil {
@@ -23,9 +22,9 @@ func HandleCallback(conf *config.Config, user *model.User, query *tgbotapi.Callb
 
 	switch query.Data {
 	case "search":
-		user.SetUserState(query.From.ID, STATE)
+		user.SetUserState(query.From.ID, _const.STATE)
 
-		response = "Введите имя исполнителя и название песни для воспроизведения(Пример - 'SLAVA SKRIPKA - Бобр'): "
+		response = "Введите имя исполнителя и название песни для воспроизведения(Пример - \"SLAVA SKRIPKA - Бобр\"): "
 
 	}
 

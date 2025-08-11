@@ -5,7 +5,5 @@ import (
 )
 
 func HandleStartCommand(chatID int64) tgbotapi.MessageConfig {
-	msg := tgbotapi.NewMessage(chatID, "Привет, с помощью меня вы сможете слушать музыку в телеграмме")
-
-	return msg
+	return tgbotapi.NewMessage(chatID, "Привет, с помощью меня вы сможете слушать музыку в телеграмме")
 }

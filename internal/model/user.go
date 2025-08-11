@@ -28,6 +28,6 @@ func (u *User) GetUserState(ID int64) (string, bool) {
 
 func (u *User) ClearUserState(ID int64) {
 	if u.userState != nil {
-		//delete
+		delete(u.userState, ID)
 	}
 }

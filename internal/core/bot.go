@@ -1,4 +1,4 @@
-package service
+package core
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -7,14 +7,21 @@ import (
 	"musicBot/internal/model"
 )
 
-func Endpoints(channel tgbotapi.UpdatesChannel, config *config.Config, user *model.User) {
+func Endpoints(channel tgbotapi.UpdatesChannel, config *config.Config, user *model.User) error {
+	var err error
+
 	for update := range channel {
 		if update.Message != nil {
-			RestAPI.HandleMessage(config, user, update.Message)
+			err = RestAPI.HandleMessage(config, user, update.Message)
+			if err != nil {
+				return err
+			}
 		}
 
 		if update.CallbackQuery != nil {
 			RestAPI.HandleCallback(config, user, update.CallbackQuery)
 		}
 	}
+
+	return err
 }

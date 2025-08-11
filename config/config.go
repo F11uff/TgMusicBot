@@ -5,16 +5,28 @@ import (
 )
 
 type Config struct {
-	Bot *tgbotapi.BotAPI
+	Bot           *tgbotapi.BotAPI
+	youtubeAPIKey string
 }
 
 func (conf *Config) InitConfig() *Config {
 	return &Config{
-		Bot: nil,
+		Bot:           nil,
+		youtubeAPIKey: "",
 	}
 }
 
 func (conf *Config) InitBot(bot *tgbotapi.BotAPI) *Config {
 	conf.Bot = bot
 	return conf
+}
+
+func (cnf *Config) SetYoutubeAPIKey(APIKey string) *Config {
+	cnf.youtubeAPIKey = APIKey
+
+	return cnf
+}
+
+func (cnf *Config) GetYoutubeAPIKey() string {
+	return cnf.youtubeAPIKey
 }

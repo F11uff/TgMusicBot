@@ -4,8 +4,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"musicBot/config"
+	"musicBot/internal/core"
 	"musicBot/internal/model"
-	"musicBot/internal/service"
 	"musicBot/pkg"
 	"os"
 )
@@ -23,6 +23,12 @@ func main() {
 		log.Fatal("NEW_BOT_TOKEN невозможно найти, возможно, вы запускаете не с корневой папки")
 	}
 
+	youtubeAPIKey := os.Getenv("YOUTUBE_API_KEY")
+
+	if youtubeAPIKey == "" {
+		log.Fatal("Не найден YOUTUBE_API_KEY")
+	}
+
 	user := model.NewUser()
 
 	bot, err := tgbotapi.NewBotAPI(token)
@@ -35,10 +41,15 @@ func main() {
 	updateBot.Timeout = 45
 
 	conf = conf.InitBot(bot)
+	conf = conf.SetYoutubeAPIKey(youtubeAPIKey)
 
 	conf.Bot.Debug = true
 
 	updates := conf.Bot.GetUpdatesChan(updateBot)
 
-	service.Endpoints(updates, conf, user)
+	err = core.Endpoints(updates, conf, user)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }

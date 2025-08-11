@@ -3,10 +3,12 @@ package RestAPI
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"musicBot/config"
+	_const "musicBot/internal/const"
 	"musicBot/internal/model"
+	"musicBot/pkg"
 )
 
-func HandleMessage(conf *config.Config, user *model.User, msg *tgbotapi.Message) {
+func HandleMessage(conf *config.Config, user *model.User, msg *tgbotapi.Message) error {
 	chatID := msg.Chat.ID
 
 	switch {
@@ -15,19 +17,36 @@ func HandleMessage(conf *config.Config, user *model.User, msg *tgbotapi.Message)
 		case "start":
 			reply := HandleStartCommand(chatID)
 			reply.ReplyMarkup = createMainKeyboard()
-			SendMessage(conf.Bot, reply)
+			conf.Bot.Send(reply)
 		}
 	default:
-		if _, ok := user.GetUserState(msg.From.ID); ok {
+		if state, ok := user.GetUserState(msg.From.ID); ok {
+			switch state {
+			case _const.STATE:
+
+				music := model.NewMusic("", "")
+				err := pkg.ParseArtistTitle(music, msg)
+
+				if err != nil {
+					return err
+				}
+
+				err = HandleMusicRequest(conf, music, msg)
+
+				if err != nil {
+					return err
+				}
+
+				music.ClearArtistAndMusic()
+				user.ClearUserState(msg.From.ID)
+			default:
+
+			}
 
 		}
 	}
-}
 
-func SendMessage(bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig) {
-	if _, err := bot.Send(msg); err != nil {
-		//log.Printf("Ошибка отправки сообщения: %v", err)
-	}
+	return nil
 }
 
 func createMainKeyboard() tgbotapi.InlineKeyboardMarkup {
