@@ -18,7 +18,7 @@ func HandleMusicRequest(cnf *config.Config, music *model.Music, msg *tgbotapi.Me
 	}
 
 	reply := tgbotapi.NewMessage(msg.Chat.ID, fmt.Sprintf(
-		"Найдено: *%s* — %s\n▶️ [Слушать на YouTube](%s)",
+		"По вашему запросу найдено: *%s* — %s\n▶️ [Слушать на YouTube](%s)",
 		music.GetArtist(), music.GetMusic(), videoURL))
 
 	reply.ParseMode = "Markdown"

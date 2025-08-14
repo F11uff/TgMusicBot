@@ -17,6 +17,10 @@ func main() {
 	var conf *config.Config
 
 	conf = conf.InitConfig()
+	conf.Database = config.NewDatabase()
+	config.ParseConfigDatabase(conf)
+
+	//fmt.Println(conf.Database.DatabaseName, " ", conf.Database.Password, " ", conf.Database.SslMode, " ", conf.Database.Port, " ", conf.Database.Host, " ", conf.Database.Username)
 
 	token := os.Getenv("NEW_BOT_TOKEN")
 	if token == "" {
@@ -34,7 +38,7 @@ func main() {
 	bot, err := tgbotapi.NewBotAPI(token)
 
 	if err != nil {
-		//сюда логгер написать надо(собственный) или взять мой логгер с моего гита
+		log.Println(err)
 	}
 
 	updateBot := tgbotapi.NewUpdate(0)
@@ -50,6 +54,6 @@ func main() {
 	err = core.Endpoints(updates, conf, user)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 }

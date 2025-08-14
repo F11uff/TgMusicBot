@@ -1,0 +1,7 @@
+Database:
+  database_name: "database"
+  host: "localhost"
+  port: "5433"
+  username: "f11uff"
+  password: 123123123
+  sslMode: "disable"

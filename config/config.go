@@ -6,12 +6,14 @@ import (
 
 type Config struct {
 	Bot           *tgbotapi.BotAPI
+	Database      *Database `yml:"Database"`
 	youtubeAPIKey string
 }
 
 func (conf *Config) InitConfig() *Config {
 	return &Config{
 		Bot:           nil,
+		Database:      nil,
 		youtubeAPIKey: "",
 	}
 }

@@ -14,14 +14,15 @@ func Endpoints(channel tgbotapi.UpdatesChannel, config *config.Config, user *mod
 		if update.Message != nil {
 			err = RestAPI.HandleMessage(config, user, update.Message)
 			if err != nil {
+
 				return err
 			}
 		}
 
-		if update.CallbackQuery != nil {
-			RestAPI.HandleCallback(config, user, update.CallbackQuery)
-		}
+		//if update.CallbackQuery != nil {
+		//	RestAPI.HandleCallback(config, user, update.CallbackQuery)
+		//}
 	}
 
-	return err
+	return nil
 }
