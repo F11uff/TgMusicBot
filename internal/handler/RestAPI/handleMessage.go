@@ -29,8 +29,10 @@ func HandleMessage(conf *config.Config, user *model.User, msg *tgbotapi.Message)
 		_, err := conf.Bot.Send(reply)
 
 		return err
-	case msg.Text == "📁 История музыки":
-		_, err := conf.Bot.Send(tgbotapi.NewMessage(chatID, "История прослушивания..."))
+	case msg.Text == "📁 История запросов":
+		_, err := conf.Bot.Send(tgbotapi.NewMessage(chatID, "История..."))
+
+		err = handleConnDB(conf)
 
 		return err
 	default:
