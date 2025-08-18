@@ -11,11 +11,11 @@ import (
 func ParseArtistTitle(music *model.Music, msg *tgbotapi.Message) error {
 	req := strings.TrimSpace(msg.Text)
 
-	if !strings.Contains(req, "-") {
+	if !strings.Contains(req, ":") {
 		musicClient := strings.TrimSpace(msg.Text)
 		music = music.SetMusic(musicClient)
 	} else {
-		re := regexp.MustCompile(`\s*[-—:]\s*`)
+		re := regexp.MustCompile(`\s*:\s*`)
 		parts := re.Split(req, 2)
 
 		if len(parts) != 2 {

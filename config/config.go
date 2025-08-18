@@ -1,26 +1,15 @@
 package config
 
-import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-)
-
 type Config struct {
-	Bot           *tgbotapi.BotAPI
 	Database      *Database `yml:"Database"`
 	youtubeAPIKey string
 }
 
 func (conf *Config) InitConfig() *Config {
 	return &Config{
-		Bot:           nil,
 		Database:      nil,
 		youtubeAPIKey: "",
 	}
-}
-
-func (conf *Config) InitBot(bot *tgbotapi.BotAPI) *Config {
-	conf.Bot = bot
-	return conf
 }
 
 func (cnf *Config) SetYoutubeAPIKey(APIKey string) *Config {

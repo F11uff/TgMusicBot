@@ -8,8 +8,8 @@ import (
 	"musicBot/internal/service"
 )
 
-func HandleMusicRequest(cnf *config.Config, music *model.Music, msg *tgbotapi.Message) error {
-	query := music.GetMusic()
+func HandleMusicRequest(cnf *config.Config, md *model.Model, msg *tgbotapi.Message) error {
+	query := md.Music.GetMusic()
 
 	videoURL, err := service.SearchMusic(cnf.GetYoutubeAPIKey(), query)
 
@@ -19,10 +19,10 @@ func HandleMusicRequest(cnf *config.Config, music *model.Music, msg *tgbotapi.Me
 
 	reply := tgbotapi.NewMessage(msg.Chat.ID, fmt.Sprintf(
 		"По вашему запросу найдено: *%s* — %s\n▶️ [Слушать на YouTube](%s)",
-		music.GetArtist(), music.GetMusic(), videoURL))
+		md.Music.GetArtist(), md.Music.GetMusic(), videoURL))
 
 	reply.ParseMode = "Markdown"
-	cnf.Bot.Send(reply)
+	md.Bot.Send(reply)
 
 	return err
 }

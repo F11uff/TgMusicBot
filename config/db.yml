@@ -1,7 +1,7 @@
 Database:
-  database_name: "database"
+  database_name: "postgres"
   host: "localhost"
   port: "5432"
-  username: "f11uff"
+  username: "postgres"
   password: 123123123
   sslMode: "disable"

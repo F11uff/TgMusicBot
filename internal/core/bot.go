@@ -5,24 +5,28 @@ import (
 	"musicBot/config"
 	"musicBot/internal/handler/RestAPI"
 	"musicBot/internal/model"
+	"musicBot/internal/storage"
+	"musicBot/internal/storage/postgresql"
 )
 
-func Endpoints(channel tgbotapi.UpdatesChannel, config *config.Config, user *model.User) error {
+func Endpoints(channel tgbotapi.UpdatesChannel, conf *config.Config, md *model.Model, db *storage.Database) error {
 	var err error
+
+	go func() {
+		postgresql.ConnDB(conf, db)
+	}()
 
 	for update := range channel {
 		if update.Message != nil {
-			err = RestAPI.HandleMessage(config, user, update.Message)
+			err = RestAPI.HandleMessage(conf, md, db, update.Message)
 			if err != nil {
 
 				return err
 			}
 		}
-
-		//if update.CallbackQuery != nil {
-		//	RestAPI.HandleCallback(config, user, update.CallbackQuery)
-		//}
 	}
+
+	defer db.Close()
 
 	return nil
 }

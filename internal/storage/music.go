@@ -1,4 +1,4 @@
-package postgresql
+package storage
 
 type Music struct {
 	Artist string

@@ -5,10 +5,10 @@ type Music struct {
 	music  string
 }
 
-func NewMusic(artist string, music string) *Music {
+func NewMusic() *Music {
 	return &Music{
-		artist: artist,
-		music:  music,
+		artist: "",
+		music:  "",
 	}
 }
 

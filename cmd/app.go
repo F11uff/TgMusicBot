@@ -6,6 +6,7 @@ import (
 	"musicBot/config"
 	"musicBot/internal/core"
 	"musicBot/internal/model"
+	"musicBot/internal/storage"
 	"musicBot/pkg"
 	"os"
 )
@@ -33,8 +34,6 @@ func main() {
 		log.Fatal("Не найден YOUTUBE_API_KEY")
 	}
 
-	user := model.NewUser()
-
 	bot, err := tgbotapi.NewBotAPI(token)
 
 	if err != nil {
@@ -44,14 +43,16 @@ func main() {
 	updateBot := tgbotapi.NewUpdate(0)
 	updateBot.Timeout = 45
 
-	conf = conf.InitBot(bot)
+	md := model.NewModel(bot)
+	db := storage.NewDatabase()
+
 	conf = conf.SetYoutubeAPIKey(youtubeAPIKey)
 
-	conf.Bot.Debug = true
+	updates := md.Bot.GetUpdatesChan(updateBot)
 
-	updates := conf.Bot.GetUpdatesChan(updateBot)
+	md.Bot.Debug = true
 
-	err = core.Endpoints(updates, conf, user)
+	err = core.Endpoints(updates, conf, md, db)
 
 	if err != nil {
 		log.Println(err)
