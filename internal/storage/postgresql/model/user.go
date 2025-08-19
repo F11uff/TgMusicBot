@@ -1,4 +1,4 @@
-package storage
+package model
 
 type User struct {
 	id       int64

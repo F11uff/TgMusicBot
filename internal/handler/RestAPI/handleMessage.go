@@ -9,7 +9,6 @@ import (
 	"musicBot/internal/model"
 	"musicBot/internal/service"
 	"musicBot/internal/storage"
-	"musicBot/internal/storage/postgresql"
 	"time"
 )
 
@@ -37,7 +36,7 @@ func HandleMessage(conf *config.Config, md *model.Model, db *storage.Database, m
 	case msg.Text == "📁 Избранное":
 		_, err := md.Bot.Send(tgbotapi.NewMessage(chatID, "Ваши избранные треки:"))
 
-		musicList, err := postgresql.LikeRequest(db)
+		musicList, err := db.GetLikedSong()
 
 		for index, music := range musicList {
 			message := fmt.Sprintf("%d) %s - %s", index, music.GetArtist(), music.GetMusic())

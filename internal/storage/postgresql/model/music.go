@@ -1,4 +1,4 @@
-package storage
+package model
 
 type Music struct {
 	Artist string

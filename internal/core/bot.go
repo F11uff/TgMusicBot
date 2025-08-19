@@ -6,14 +6,15 @@ import (
 	"musicBot/internal/handler/RestAPI"
 	"musicBot/internal/model"
 	"musicBot/internal/storage"
-	"musicBot/internal/storage/postgresql"
 )
 
 func Endpoints(channel tgbotapi.UpdatesChannel, conf *config.Config, md *model.Model, db *storage.Database) error {
-	var err error
+	var err error = nil
 
 	go func() {
-		postgresql.ConnDB(conf, db)
+		urlConnection := db.ConnectionURL(conf)
+
+		err = db.Connect(urlConnection)
 	}()
 
 	for update := range channel {
@@ -26,7 +27,9 @@ func Endpoints(channel tgbotapi.UpdatesChannel, conf *config.Config, md *model.M
 		}
 	}
 
-	defer db.Close()
+	defer func() {
+		err = db.Close()
+	}()
 
-	return nil
+	return err
 }

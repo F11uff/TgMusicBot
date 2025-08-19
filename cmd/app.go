@@ -7,6 +7,7 @@ import (
 	"musicBot/internal/core"
 	"musicBot/internal/model"
 	"musicBot/internal/storage"
+	model2 "musicBot/internal/storage/postgresql/model"
 	"musicBot/pkg"
 	"os"
 )
@@ -44,7 +45,9 @@ func main() {
 	updateBot.Timeout = 45
 
 	md := model.NewModel(bot)
-	db := storage.NewDatabase()
+
+	db := model2.NewPosgreSQLDatabase()
+	musicRepo := storage.NewDatabase(db)
 
 	conf = conf.SetYoutubeAPIKey(youtubeAPIKey)
 
@@ -52,7 +55,7 @@ func main() {
 
 	md.Bot.Debug = true
 
-	err = core.Endpoints(updates, conf, md, db)
+	err = core.Endpoints(updates, conf, md, musicRepo)
 
 	if err != nil {
 		log.Println(err)
