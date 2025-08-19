@@ -7,7 +7,7 @@ import (
 	"musicBot/internal/core"
 	"musicBot/internal/model"
 	"musicBot/internal/storage"
-	model2 "musicBot/internal/storage/postgresql/model"
+	db "musicBot/internal/storage/postgresql/modelSQL"
 	"musicBot/pkg"
 	"os"
 )
@@ -46,8 +46,8 @@ func main() {
 
 	md := model.NewModel(bot)
 
-	db := model2.NewPosgreSQLDatabase()
-	musicRepo := storage.NewDatabase(db)
+	database := db.NewPosgreSQLDatabase()
+	musicRepo := storage.NewDatabase(database)
 
 	conf = conf.SetYoutubeAPIKey(youtubeAPIKey)
 

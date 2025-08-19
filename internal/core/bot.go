@@ -13,7 +13,6 @@ func Endpoints(channel tgbotapi.UpdatesChannel, conf *config.Config, md *model.M
 
 	go func() {
 		urlConnection := db.ConnectionURL(conf)
-
 		err = db.Connect(urlConnection)
 	}()
 

@@ -1,4 +1,4 @@
-package model
+package modelSQL
 
 import (
 	"database/sql"
@@ -7,14 +7,13 @@ import (
 	_ "github.com/lib/pq"
 	"golang.org/x/net/context"
 	"musicBot/config"
-	"musicBot/internal/model"
 	"time"
 )
 
 type PosgreSQLDatabase struct {
 	psql  *sql.DB
 	Music *Music
-	User  *User
+	//User  *User
 }
 
 func NewPosgreSQLDatabase() *PosgreSQLDatabase {
@@ -23,7 +22,7 @@ func NewPosgreSQLDatabase() *PosgreSQLDatabase {
 	db := &PosgreSQLDatabase{
 		psql:  psql2,
 		Music: NewMusic(),
-		User:  NewUser(),
+		//User:  NewUser(),
 	}
 
 	return db
@@ -56,10 +55,6 @@ func (db *PosgreSQLDatabase) Connect(urlConnect string) error {
 	return nil
 }
 
-//func (db *PosgreSQLDatabase) GetDB() *sql.DB {
-//	return db.psql
-//}
-
 func (db *PosgreSQLDatabase) Close() error {
 	if db.psql != nil {
 		return db.psql.Close()
@@ -68,7 +63,7 @@ func (db *PosgreSQLDatabase) Close() error {
 	return nil
 }
 
-func (db *PosgreSQLDatabase) GetLikedSongRequest() ([]model.Music, error) {
+func (db *PosgreSQLDatabase) GetLikedSongRequest() ([]Music, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -81,7 +76,7 @@ func (db *PosgreSQLDatabase) GetLikedSongRequest() ([]model.Music, error) {
 	}
 	defer rows.Close()
 
-	var musicList []model.Music
+	var musicList []Music
 
 	for rows.Next() {
 		var music, artist string
@@ -90,8 +85,36 @@ func (db *PosgreSQLDatabase) GetLikedSongRequest() ([]model.Music, error) {
 			return nil, err
 		}
 
-		musicList = append(musicList, *model.NewMusic().SetArtist(artist).SetMusic(music))
+		musicList = append(musicList, *NewMusic().SetArtist(artist).SetTitle(music))
 	}
 
 	return musicList, nil
+}
+
+func (db *PosgreSQLDatabase) AddLikedSongRequest(artist, title string) error {
+	sqlRequest := `INSERT INTO LikeMusic(artist, music) VALUES ($1, $2)`
+
+	_, err := db.psql.Exec(sqlRequest, artist, title)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *PosgreSQLDatabase) RemoveLikedSongRequest() error {
+	return nil
+}
+
+func (db *PosgreSQLDatabase) AddUserRequest(username string) error {
+	sqlRequest := `INSERT INTO users(username) VALUES ($1)`
+
+	_, err := db.psql.Exec(sqlRequest, username)
+
+	if err != nil {
+		return errors.New("fail to add user to database")
+	}
+
+	return nil
 }

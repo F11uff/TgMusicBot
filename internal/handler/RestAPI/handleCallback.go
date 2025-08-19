@@ -6,10 +6,10 @@ package RestAPI
 //	"log"
 //	"musicBot/config"
 //	_const "musicBot/internal/const"
-//	"musicBot/internal/model"
+//	"musicBot/internal/modelSQL"
 //)
 //
-//func HandleCallback(conf *config.Config, user *model.User, query *tgbotapi.CallbackQuery) {
+//func HandleCallback(conf *config.Config, user *modelSQL.User, query *tgbotapi.CallbackQuery) {
 //	if _, err := conf.Bot.Request(tgbotapi.NewCallback(query.ID, "☻")); err != nil {
 //		log.Printf("Callback error: %v", err)
 //	}

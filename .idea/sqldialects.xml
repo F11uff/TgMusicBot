@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/internal/storage/postgresql/likeRequest.go" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/migration/dir.create_table.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/migration/dir.create_table_like_music.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/migration/dir.down_table.sql" dialect="PostgreSQL" />

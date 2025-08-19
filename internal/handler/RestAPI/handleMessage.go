@@ -22,6 +22,13 @@ func HandleMessage(conf *config.Config, md *model.Model, db *storage.Database, m
 			reply := HandleStartCommand(chatID)
 			reply.ReplyMarkup = createMainKeyboard()
 			_, err := md.Bot.Send(reply)
+
+			TGUsername := msg.From.UserName
+
+			if err := db.AddUserRequest(TGUsername); err != nil {
+				return err
+			}
+
 			return err
 		}
 	case msg.Text == "🔍 Поиск":
@@ -36,15 +43,33 @@ func HandleMessage(conf *config.Config, md *model.Model, db *storage.Database, m
 	case msg.Text == "📁 Избранное":
 		_, err := md.Bot.Send(tgbotapi.NewMessage(chatID, "Ваши избранные треки:"))
 
-		musicList, err := db.GetLikedSong()
+		musicList, err := db.GetLikedSongRequest()
 
 		for index, music := range musicList {
-			message := fmt.Sprintf("%d) %s - %s", index, music.GetArtist(), music.GetMusic())
+			message := fmt.Sprintf("%d) %s - %s", index, music.GetArtist(), music.GetTitle())
 
 			_, _ = md.Bot.Send(tgbotapi.NewMessage(chatID, message))
 		}
 
 		return err
+	case msg.Text == "❤️ Добавить в избранное":
+		err := db.AddLikedSongRequest(md.Music.GetArtist(), md.Music.GetMusic())
+
+		if err != nil {
+			return err
+		}
+		md.Music.ClearArtistAndMusic()
+
+		reply := tgbotapi.NewMessage(chatID, "Хорошо")
+		reply.ReplyMarkup = createMainKeyboard()
+		md.Bot.Send(reply)
+
+		return err
+	case msg.Text == "❌ Отмена":
+		reply := tgbotapi.NewMessage(chatID, "Хорошо")
+		reply.ReplyMarkup = createMainKeyboard()
+		md.Bot.Send(reply)
+
 	default:
 		if state, ok := md.User.GetUserState(msg.From.ID); ok && state == _const.STATE {
 			err := service.ParseArtistTitle(md.Music, msg)
@@ -64,11 +89,13 @@ func HandleMessage(conf *config.Config, md *model.Model, db *storage.Database, m
 
 			time.Sleep(1 * time.Second)
 
-			md.Music.ClearArtistAndMusic()
+			//md.Music.ClearArtistAndMusic()
 			md.User.ClearUserState(msg.From.ID)
 
 			reply := tgbotapi.NewMessage(chatID, "Готово! Выберите следующее действие")
-			reply.ReplyMarkup = createMainKeyboard()
+
+			reply.ReplyMarkup = createAddKeyboard()
+
 			_, err = md.Bot.Send(reply)
 
 			return err
@@ -88,5 +115,14 @@ func createMainKeyboard() tgbotapi.ReplyKeyboardMarkup {
 		//	tgbotapi.NewInlineKeyboardButtonData("🎧 Плейлисты", "playlists"),
 		//	tgbotapi.NewInlineKeyboardButtonData("⚙️ Настройки", "settings"),
 		//),
+	)
+}
+
+func createAddKeyboard() tgbotapi.ReplyKeyboardMarkup {
+	return tgbotapi.NewReplyKeyboard(
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton("❤️ Добавить в избранное"),
+			tgbotapi.NewKeyboardButton("❌ Отмена"),
+		),
 	)
 }

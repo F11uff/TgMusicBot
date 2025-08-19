@@ -1,4 +1,4 @@
-package model
+package modelSQL
 
 type Music struct {
 	Artist string
